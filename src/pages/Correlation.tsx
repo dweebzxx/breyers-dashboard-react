@@ -19,14 +19,16 @@ function corrCellStyle(r: number | null): React.CSSProperties {
   }
   const abs = Math.abs(r)
   if (r > 0) {
-    const other = Math.round(255 - abs * 160)
-    const bg = `rgb(${other}, ${other + 10}, ${255})`
-    const fg = abs > 0.45 ? '#ffffff' : '#1f2937'
-    return { backgroundColor: bg, color: fg }
+    const lightR = 220, lightG = 233, lightB = 195
+    const darkR = 90, darkG = 136, darkB = 52
+    const bR = Math.round(lightR + (darkR - lightR) * abs)
+    const bG = Math.round(lightG + (darkG - lightG) * abs)
+    const bB = Math.round(lightB + (darkB - lightB) * abs)
+    const fg = abs > 0.5 ? '#ffffff' : '#1f2937'
+    return { backgroundColor: `rgb(${bR},${bG},${bB})`, color: fg }
   } else {
-    const red = 255
     const other = Math.round(255 - abs * 160)
-    const bg = `rgb(${red}, ${other}, ${other})`
+    const bg = `rgb(255,${other},${other})`
     const fg = abs > 0.45 ? '#ffffff' : '#1f2937'
     return { backgroundColor: bg, color: fg }
   }
@@ -41,6 +43,7 @@ function sigStars(pvalue: number | null): string {
 
 export default function Correlation() {
   const corrStats = useDataStore(s => s.correlationStats)
+  const questionText = useDataStore(s => s.questionText)
 
   if (!corrStats) {
     return <p className="text-muted-foreground p-4">Loading correlation data...</p>
@@ -62,6 +65,11 @@ export default function Correlation() {
           <CardTitle className="text-base">
             Pearson Correlation Matrix (n = {corrStats.n_obs})
           </CardTitle>
+          {questionText?.['Q8_AttrImportance_1'] && (
+            <p className="text-xs italic text-muted-foreground mt-0.5 leading-snug">
+              Attribute importance: When choosing ice cream, how important is each of the following? (1 = Not at all important, 5 = Extremely important)
+            </p>
+          )}
         </CardHeader>
         <CardContent className="overflow-auto">
           <table className="text-xs border-collapse w-full">
@@ -104,7 +112,7 @@ export default function Correlation() {
                           <>
                             <span>{r !== null ? r.toFixed(2) : 'N/A'}</span>
                             {stars && (
-                              <span className="ml-0.5 font-bold text-amber-600">{stars}</span>
+                              <span className="ml-0.5 font-bold" style={{ color: '#d2b974' }}>{stars}</span>
                             )}
                           </>
                         )}
@@ -118,35 +126,33 @@ export default function Correlation() {
         </CardContent>
       </Card>
 
-      {/* Legend */}
       <div className="flex flex-wrap gap-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded" style={{ backgroundColor: 'rgb(55, 90, 255)' }} />
-          <span>Strong positive correlation</span>
+          <div className="w-5 h-5 rounded" style={{ backgroundColor: 'rgb(90,136,52)' }} />
+          <span>Strong positive</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded" style={{ backgroundColor: 'rgb(185, 185, 255)' }} />
-          <span>Weak positive correlation</span>
+          <div className="w-5 h-5 rounded" style={{ backgroundColor: 'rgb(220,233,195)' }} />
+          <span>Weak positive</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded" style={{ backgroundColor: '#e5e7eb' }} />
-          <span>Diagonal (self-correlation)</span>
+          <span>Diagonal</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded" style={{ backgroundColor: 'rgb(255, 185, 185)' }} />
-          <span>Weak negative correlation</span>
+          <div className="w-5 h-5 rounded" style={{ backgroundColor: 'rgb(255,185,185)' }} />
+          <span>Weak negative</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="font-bold text-amber-600">*</span>
-          <span>p &lt; 0.05</span>
+          <div className="w-5 h-5 rounded" style={{ backgroundColor: 'rgb(255,95,95)' }} />
+          <span>Strong negative</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="font-bold text-amber-600">**</span>
-          <span>p &lt; 0.01</span>
+          <span className="font-bold" style={{ color: '#d2b974' }}>* / **</span>
+          <span>p &lt; 0.05 / p &lt; 0.01</span>
         </div>
       </div>
 
-      {/* Full-label reference */}
       <Card>
         <CardContent className="pt-4">
           <p className="text-xs font-medium text-muted-foreground mb-2">Variable Reference</p>

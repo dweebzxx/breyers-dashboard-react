@@ -23,9 +23,13 @@ const CONCEPTS = [
 ]
 
 const CONCEPT_COLORS: Record<string, string> = {
-  'with higher protein': '#2563eb',
-  'with low or zero added sugar': '#f59e0b',
-  'with higher protein and low or zero added sugar': '#0d9488',
+  'with higher protein': '#91b82b',
+  'with low or zero added sugar': '#e1c4bd',
+  'with higher protein and low or zero added sugar': '#47a0d0',
+}
+
+function QuestionSubtitle({ text }: { text: string }) {
+  return <p className="text-xs italic text-muted-foreground mt-0.5 mb-2 leading-snug">{text}</p>
 }
 
 export default function ConceptPerformance() {
@@ -33,8 +37,8 @@ export default function ConceptPerformance() {
   const [groupB, setGroupB] = useState(CONCEPTS[1].value)
   const filtered = useFilteredRespondents()
   const conceptStats = useDataStore(s => s.conceptPerformanceStats)
+  const questionText = useDataStore(s => s.questionText)
 
-  // Compute means from filtered respondents for the selected concepts
   const getConceptStats = (conceptLabel: string) => {
     const subset = filtered.filter(r => r.ConceptLabel === conceptLabel)
     if (subset.length === 0) return null
@@ -46,7 +50,6 @@ export default function ConceptPerformance() {
   const statsA = getConceptStats(groupA)
   const statsB = getConceptStats(groupB)
 
-  // Find pre-computed t-test for the selected pair
   const findTTest = (metric: 'appeal' | 'purchase_intent') => {
     if (!conceptStats) return null
     return conceptStats[metric].find(
@@ -59,19 +62,16 @@ export default function ConceptPerformance() {
   const appealTTest = findTTest('appeal')
   const piTTest = findTTest('purchase_intent')
 
-  // Side-by-side bar chart data for each metric
-  const makeBarData = (_metric: 'meanAppeal' | 'meanPI') => {
-    const labelA = CONCEPTS.find(c => c.value === groupA)?.label ?? groupA
-    const labelB = CONCEPTS.find(c => c.value === groupB)?.label ?? groupB
-    return [
-      { metric: 'Appeal', [labelA]: statsA?.meanAppeal ?? 0, [labelB]: statsB?.meanAppeal ?? 0 },
-      { metric: 'Purchase Intent', [labelA]: statsA?.meanPI ?? 0, [labelB]: statsB?.meanPI ?? 0 },
-    ]
-  }
-
   const labelA = CONCEPTS.find(c => c.value === groupA)?.label ?? groupA
   const labelB = CONCEPTS.find(c => c.value === groupB)?.label ?? groupB
-  const barData = makeBarData('meanAppeal')
+
+  const barData = [
+    { metric: 'Appeal', [labelA]: statsA?.meanAppeal ?? 0, [labelB]: statsB?.meanAppeal ?? 0 },
+    { metric: 'Purchase Intent', [labelA]: statsA?.meanPI ?? 0, [labelB]: statsB?.meanPI ?? 0 },
+  ]
+
+  const q11Text = questionText?.['Q11_Appeal'] ?? ''
+  const q12Text = questionText?.['Q12_PurchaseIntent'] ?? ''
 
   return (
     <div className="space-y-6">
@@ -82,7 +82,6 @@ export default function ConceptPerformance() {
         </p>
       </div>
 
-      {/* Pairwise selector */}
       <Card>
         <CardContent className="pt-4 pb-4">
           <div className="flex items-center gap-4 flex-wrap">
@@ -122,12 +121,11 @@ export default function ConceptPerformance() {
         </CardContent>
       </Card>
 
-      {/* Side-by-side bar charts */}
       <div className="grid grid-cols-2 gap-6">
-        {/* Appeal chart */}
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className="pb-1">
             <CardTitle className="text-base">Q11: Appeal</CardTitle>
+            {q11Text && <QuestionSubtitle text={q11Text} />}
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={220}>
@@ -147,7 +145,7 @@ export default function ConceptPerformance() {
                 />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                   {[groupA, groupB].map((g, i) => (
-                    <Cell key={i} fill={CONCEPT_COLORS[g] ?? '#2563eb'} />
+                    <Cell key={i} fill={CONCEPT_COLORS[g] ?? '#91b82b'} />
                   ))}
                 </Bar>
               </BarChart>
@@ -156,10 +154,10 @@ export default function ConceptPerformance() {
           </CardContent>
         </Card>
 
-        {/* Purchase Intent chart */}
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className="pb-1">
             <CardTitle className="text-base">Q12: Purchase Intent</CardTitle>
+            {q12Text && <QuestionSubtitle text={q12Text} />}
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={220}>
@@ -177,7 +175,11 @@ export default function ConceptPerformance() {
                   contentStyle={{ fontSize: 12 }}
                   formatter={(val: number) => [val.toFixed(2), 'Mean Purchase Intent']}
                 />
-                <Bar dataKey="value" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                  {[groupA, groupB].map((g, i) => (
+                    <Cell key={i} fill={CONCEPT_COLORS[g] ?? '#e1c4bd'} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
             <ScaleFootnote scale="1 = Very unlikely, 5 = Very likely" />
@@ -185,9 +187,8 @@ export default function ConceptPerformance() {
         </Card>
       </div>
 
-      {/* All-concepts comparison chart */}
       <Card>
-        <CardHeader className="pb-2">
+        <CardHeader className="pb-1">
           <CardTitle className="text-base">Appeal and Purchase Intent by Concept</CardTitle>
         </CardHeader>
         <CardContent>
@@ -198,24 +199,21 @@ export default function ConceptPerformance() {
               <YAxis domain={[0, 5]} tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={{ fontSize: 12 }} formatter={(val: number) => val.toFixed(2)} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Bar dataKey={labelA} fill={CONCEPT_COLORS[groupA] ?? '#2563eb'} radius={[4, 4, 0, 0]} />
-              <Bar dataKey={labelB} fill={CONCEPT_COLORS[groupB] ?? '#f59e0b'} radius={[4, 4, 0, 0]} />
+              <Bar dataKey={labelA} fill={CONCEPT_COLORS[groupA] ?? '#91b82b'} radius={[4, 4, 0, 0]} />
+              <Bar dataKey={labelB} fill={CONCEPT_COLORS[groupB] ?? '#e1c4bd'} radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
           <ScaleFootnote scale="1 = Least favorable, 5 = Most favorable" />
         </CardContent>
       </Card>
 
-      {/* T-test StatCards */}
       <div className="grid grid-cols-2 gap-4">
         {appealTTest ? (
           <StatCard
             title="T-Test: Appeal (Q11)"
             result={appealTTest.result}
             group1Label={labelA}
-            group2Label={
-              appealTTest.group1 === groupA ? labelB : labelA
-            }
+            group2Label={appealTTest.group1 === groupA ? labelB : labelA}
           />
         ) : (
           <Card>
@@ -230,9 +228,7 @@ export default function ConceptPerformance() {
             title="T-Test: Purchase Intent (Q12)"
             result={piTTest.result}
             group1Label={labelA}
-            group2Label={
-              piTTest.group1 === groupA ? labelB : labelA
-            }
+            group2Label={piTTest.group1 === groupA ? labelB : labelA}
           />
         ) : (
           <Card>

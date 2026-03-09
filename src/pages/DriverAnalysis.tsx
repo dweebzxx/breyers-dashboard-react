@@ -75,6 +75,7 @@ export default function DriverAnalysis() {
   const [refCell, setRefCell] = useState('2')
   const olsStats = useDataStore(s => s.regressionOLSStats)
   const logitStats = useDataStore(s => s.regressionLogitStats)
+  const questionText = useDataStore(s => s.questionText)
   const filtered = useFilteredRespondents()
 
   // Check if dummies should be shown
@@ -221,6 +222,11 @@ export default function DriverAnalysis() {
           <CardDescription>
             Outcome: Purchase Intent (Q12, 1-5 scale) | Adj. R&sup2; = {ols.adj_r_squared.toFixed(3)}
           </CardDescription>
+          {questionText?.['Q12_PurchaseIntent'] && (
+            <p className="text-xs italic text-muted-foreground mt-0.5 leading-snug">
+              {questionText['Q12_PurchaseIntent']}
+            </p>
+          )}
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -236,12 +242,21 @@ export default function DriverAnalysis() {
               ))}
             </TableHeader>
             <TableBody>
-              {olsTable.getRowModel().rows.map(row => {
+              {olsTable.getRowModel().rows.map((row, idx) => {
                 const isSignif = row.original.pvalue < 0.05
+                const isIntercept = row.original.predictor === 'Intercept'
+                const nextRow = olsTable.getRowModel().rows[idx + 1]
+                const isLastBeforeDrivers = isIntercept && nextRow && nextRow.original.predictor !== 'Intercept'
                 return (
-                  <TableRow key={row.id} className={isSignif ? 'bg-green-50 hover:bg-green-50/80' : ''}>
+                  <TableRow
+                    key={row.id}
+                    className={cn(
+                      isSignif ? 'bg-[#91b82b]/10 font-bold hover:bg-[#91b82b]/15' : '',
+                      isLastBeforeDrivers ? 'border-b-2 border-border' : ''
+                    )}
+                  >
                     {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className={isSignif ? 'font-bold' : ''}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
@@ -252,7 +267,7 @@ export default function DriverAnalysis() {
           </Table>
           <div className="px-4 pb-3 pt-1">
             <p className="text-xs text-muted-foreground">
-              Green rows indicate p &lt; 0.05. Reference group: {REF_OPTIONS.find(o => o.value === refCell)?.label}.
+              Bold highlighted rows indicate p &lt; 0.05. The Intercept row is separated by a border from the attribute drivers. Reference group: {REF_OPTIONS.find(o => o.value === refCell)?.label}.
               Scale: 1 = Not at all important, 5 = Extremely important (attribute importance predictors).
             </p>
           </div>
@@ -266,6 +281,11 @@ export default function DriverAnalysis() {
           <CardDescription>
             Outcome: Top 2 Box Purchase Intent (Likely/Very Likely) | Pseudo R&sup2; = {logit.pseudo_r_squared.toFixed(3)} | LLR p-value: {logit.llr_pvalue < 0.001 ? '< 0.001' : logit.llr_pvalue.toFixed(4)}
           </CardDescription>
+          {questionText?.['Q12_PurchaseIntent'] && (
+            <p className="text-xs italic text-muted-foreground mt-0.5 leading-snug">
+              {questionText['Q12_PurchaseIntent']}
+            </p>
+          )}
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -281,12 +301,21 @@ export default function DriverAnalysis() {
               ))}
             </TableHeader>
             <TableBody>
-              {logitTable.getRowModel().rows.map(row => {
+              {logitTable.getRowModel().rows.map((row, idx) => {
                 const isSignif = row.original.pvalue < 0.05
+                const isIntercept = row.original.predictor === 'Intercept'
+                const nextRow = logitTable.getRowModel().rows[idx + 1]
+                const isLastBeforeDrivers = isIntercept && nextRow && nextRow.original.predictor !== 'Intercept'
                 return (
-                  <TableRow key={row.id} className={isSignif ? 'bg-green-50 hover:bg-green-50/80' : ''}>
+                  <TableRow
+                    key={row.id}
+                    className={cn(
+                      isSignif ? 'bg-[#91b82b]/10 font-bold hover:bg-[#91b82b]/15' : '',
+                      isLastBeforeDrivers ? 'border-b-2 border-border' : ''
+                    )}
+                  >
                     {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className={isSignif ? 'font-bold' : ''}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
@@ -297,7 +326,7 @@ export default function DriverAnalysis() {
           </Table>
           <div className="px-4 pb-3 pt-1">
             <p className="text-xs text-muted-foreground">
-              Green rows indicate p &lt; 0.05. OR = Odds Ratio. Reference group: {REF_OPTIONS.find(o => o.value === refCell)?.label}.
+              Bold highlighted rows indicate p &lt; 0.05. The Intercept row is separated from attribute drivers. OR = Odds Ratio. Reference group: {REF_OPTIONS.find(o => o.value === refCell)?.label}.
             </p>
           </div>
         </CardContent>

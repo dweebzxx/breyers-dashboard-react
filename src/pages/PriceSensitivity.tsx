@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useDataStore } from '@/store/dataStore'
+import { cn } from '@/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { ScaleFootnote } from '@/components/ScaleFootnote'
 import {
   LineChart,
@@ -21,14 +21,17 @@ const CONCEPT_LABELS: Record<string, string> = {
 }
 
 const CONCEPT_COLORS: Record<string, string> = {
-  'with higher protein': '#2563eb',
-  'with low or zero added sugar': '#f59e0b',
-  'with higher protein and low or zero added sugar': '#0d9488',
+  'with higher protein': '#91b82b',
+  'with low or zero added sugar': '#e1c4bd',
+  'with higher protein and low or zero added sugar': '#47a0d0',
 }
+
+const OVERALL_COLOR = '#5a8834'
 
 export default function PriceSensitivity() {
   const [showBreakout, setShowBreakout] = useState(false)
   const priceStats = useDataStore(s => s.priceSensitivityStats)
+  const questionText = useDataStore(s => s.questionText)
 
   if (!priceStats) {
     return <p className="text-muted-foreground p-4">Loading price sensitivity data...</p>
@@ -58,13 +61,17 @@ export default function PriceSensitivity() {
 
       {/* Toggle */}
       <div className="flex items-center gap-2">
-        <Button
-          variant={showBreakout ? 'default' : 'outline'}
-          size="sm"
+        <button
           onClick={() => setShowBreakout(!showBreakout)}
+          className={cn(
+            'rounded-md border px-3 py-1.5 text-sm font-medium transition-all',
+            showBreakout
+              ? 'border-[#5a8834] bg-[#91b82b] text-white shadow-sm'
+              : 'border-border bg-background text-foreground hover:border-[#5a8834] hover:bg-[#91b82b]/10'
+          )}
         >
-          {showBreakout ? 'Hide Concept Breakout' : 'Show Concept Breakout'}
-        </Button>
+          Compare by Concept
+        </button>
         <span className="text-sm text-muted-foreground">
           {showBreakout ? 'Showing one line per concept' : 'Showing overall mean'}
         </span>
@@ -76,6 +83,11 @@ export default function PriceSensitivity() {
           <CardTitle className="text-base">
             Purchase Likelihood by Price Point
           </CardTitle>
+          {questionText?.['Q17_PurchaseLikelihood_399'] && (
+            <p className="text-xs italic text-muted-foreground mt-0.5 leading-snug">
+              {questionText['Q17_PurchaseLikelihood_399']}
+            </p>
+          )}
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={320}>
@@ -99,9 +111,9 @@ export default function PriceSensitivity() {
                   type="monotone"
                   dataKey="overall"
                   name="Overall Mean"
-                  stroke="#2563eb"
+                  stroke={OVERALL_COLOR}
                   strokeWidth={2.5}
-                  dot={{ r: 5, fill: '#2563eb' }}
+                  dot={{ r: 5, fill: OVERALL_COLOR }}
                   activeDot={{ r: 7 }}
                 />
               )}

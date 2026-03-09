@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, NavLink, useLocation } from 'react-router-dom'
 import { AlertTriangle } from 'lucide-react'
 import { useDataStore, useFilteredRespondents } from '@/store/dataStore'
-import { Sidebar } from '@/components/Sidebar'
+import { Sidebar, type SidebarFilterConfig } from '@/components/Sidebar'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 import Overview from '@/pages/Overview'
@@ -24,6 +24,18 @@ const NAV_TABS = [
   { path: '/demographics', label: 'Demographics' },
   { path: '/raw-data', label: 'Raw Data' },
 ]
+
+// Which filters are relevant for each route. undefined = all enabled, false = greyed out.
+const ROUTE_FILTERS: Record<string, SidebarFilterConfig> = {
+  '/':                    { conceptCell: true,  dietFocus: true,  ageGroup: true },
+  '/concept-performance': { conceptCell: true,  dietFocus: true,  ageGroup: true },
+  '/driver-analysis':     { conceptCell: true,  dietFocus: false, ageGroup: false },
+  '/crosstabs':           { conceptCell: true,  dietFocus: true,  ageGroup: true },
+  '/correlation':         { conceptCell: false, dietFocus: false, ageGroup: false },
+  '/price-sensitivity':   { conceptCell: false, dietFocus: false, ageGroup: false },
+  '/demographics':        { conceptCell: true,  dietFocus: true,  ageGroup: true },
+  '/raw-data':            { conceptCell: true,  dietFocus: true,  ageGroup: true },
+}
 
 function ZeroNBanner() {
   const filtered = useFilteredRespondents()
@@ -49,10 +61,13 @@ function AppShell() {
   const loadAll = useDataStore(s => s.loadAll)
   const isLoading = useDataStore(s => s.isLoading)
   const error = useDataStore(s => s.error)
+  const location = useLocation()
 
   useEffect(() => {
     loadAll()
   }, [loadAll])
+
+  const filterConfig = ROUTE_FILTERS[location.pathname] ?? {}
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f3f4f7' }}>
@@ -78,7 +93,7 @@ function AppShell() {
       </header>
 
       <div className="flex">
-        <Sidebar />
+        <Sidebar activeFilters={filterConfig} />
 
         <div className="flex-1 min-w-0 flex flex-col">
           <nav className="border-b bg-card" aria-label="Dashboard sections">
@@ -117,7 +132,7 @@ function AppShell() {
               <div className="flex items-center justify-center py-24">
                 <div className="text-center">
                   <div
-                    className="w-10 h-10 rounded-full border-4 border-t-transparent animate-spin mx-auto mb-3"
+                    className="w-10 h-10 rounded-full border-4 animate-spin mx-auto mb-3"
                     style={{ borderColor: '#91b82b', borderTopColor: 'transparent' }}
                   />
                   <p className="text-muted-foreground text-sm">Loading survey data...</p>

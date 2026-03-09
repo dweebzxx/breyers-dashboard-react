@@ -1,4 +1,6 @@
-import { useFilteredRespondents } from '@/store/dataStore'
+import { useFilteredRespondents, useDataStore } from '@/store/dataStore'
+import type { ConceptPerformanceStats } from '@/types/stats'
+import type { Respondent } from '@/types/survey'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScaleFootnote } from '@/components/ScaleFootnote'
 import {
@@ -46,7 +48,7 @@ interface Insight {
 }
 
 function buildInsights(
-  filtered: ReturnType<typeof useFilteredRespondents>,
+  filtered: Respondent[],
   n: number
 ): Insight[] {
   if (n === 0) return []
@@ -108,8 +110,101 @@ function buildInsights(
   return insights
 }
 
+interface SigInsight {
+  label: string
+  detail: string
+  badge: string
+  badgeColor: string
+}
+
+function buildSigInsights(
+  filtered: Respondent[],
+  n: number,
+  conceptStats: ConceptPerformanceStats | null
+): SigInsight[] {
+  if (n === 0) return []
+  const out: SigInsight[] = []
+
+  // 1. Best concept by T2B
+  const conceptT2B = [1, 2, 3].map(c => {
+    const sub = filtered.filter(r => r.ClaimCell === c)
+    return {
+      cell: c,
+      t2b: sub.length > 0 ? (sub.filter(r => r.Top2Box_PI === 1).length / sub.length) * 100 : 0,
+      n: sub.length,
+    }
+  }).sort((a, b) => b.t2b - a.t2b)
+  const best = conceptT2B[0]
+  const worst = conceptT2B[2]
+  const NAMES: Record<number, string> = { 1: 'Higher Protein', 2: 'Low/Zero Sugar', 3: 'Both Claims' }
+
+  if (best.n > 0 && worst.n > 0) {
+    const diff = best.t2b - worst.t2b
+    out.push({
+      label: `${NAMES[best.cell]} leads on purchase intent`,
+      detail: `${NAMES[best.cell]} achieved ${best.t2b.toFixed(1)}% Top 2 Box PI, ${diff.toFixed(1)} percentage points ahead of ${NAMES[worst.cell]} (${worst.t2b.toFixed(1)}%).`,
+      badge: 'Concept Finding',
+      badgeColor: '#91b82b',
+    })
+  }
+
+  // 2. Sig t-test from precomputed stats
+  if (conceptStats) {
+    const sigPairs = [...conceptStats.appeal, ...conceptStats.purchase_intent].filter(
+      p => p.result.p_value !== null && p.result.p_value < 0.05
+    )
+    if (sigPairs.length > 0) {
+      const sp = sigPairs[0]
+      const metric = conceptStats.appeal.includes(sp) ? 'Appeal' : 'Purchase Intent'
+      const g1 = sp.group1.replace('with ', '').replace(' and ', ' + ')
+      const g2 = sp.group2.replace('with ', '').replace(' and ', ' + ')
+      const pv = sp.result.p_value
+      const md = sp.result.mean_diff
+      out.push({
+        label: `Significant difference: ${metric}`,
+        detail: `A t-test found a statistically significant difference in ${metric} between "${g1}" and "${g2}" (p = ${pv !== null ? pv.toFixed(3) : 'N/A'}). Mean diff = ${md !== null ? md.toFixed(2) : 'N/A'}.`,
+        badge: 'p < 0.05',
+        badgeColor: '#47a0d0',
+      })
+    }
+  }
+
+  // 3. Protein claim vs sugar claim mean appeal
+  const proteinGroup = filtered.filter(r => r.ClaimCell === 1)
+  const sugarGroup = filtered.filter(r => r.ClaimCell === 2)
+  if (proteinGroup.length > 0 && sugarGroup.length > 0) {
+    const proteinAppeal = proteinGroup.reduce((s, r) => s + r.Q11_Appeal, 0) / proteinGroup.length
+    const sugarAppeal = sugarGroup.reduce((s, r) => s + r.Q11_Appeal, 0) / sugarGroup.length
+    const higher = proteinAppeal > sugarAppeal ? 'Higher Protein' : 'Low/Zero Sugar'
+    const lower = proteinAppeal > sugarAppeal ? 'Low/Zero Sugar' : 'Higher Protein'
+    const diff = Math.abs(proteinAppeal - sugarAppeal)
+    out.push({
+      label: `${higher} scores higher on appeal`,
+      detail: `Mean appeal for ${higher} (${Math.max(proteinAppeal, sugarAppeal).toFixed(2)}) exceeds ${lower} (${Math.min(proteinAppeal, sugarAppeal).toFixed(2)}) by ${diff.toFixed(2)} points.`,
+      badge: 'Appeal Score',
+      badgeColor: '#d2b974',
+    })
+  }
+
+  // 4. Diet focus alignment
+  const dietProtein = filtered.filter(r => r.Q21_DietFocus === 2 || r.Q21_DietFocus === 3)
+  const dietSugar = filtered.filter(r => r.Q21_DietFocus === 1 || r.Q21_DietFocus === 3)
+  if (dietProtein.length > 0) {
+    const proteinPI = dietProtein.filter(r => r.Top2Box_PI === 1).length / dietProtein.length * 100
+    out.push({
+      label: 'Protein-seekers show strong PI',
+      detail: `Among protein-focused respondents (n = ${dietProtein.length}), ${proteinPI.toFixed(1)}% show Top 2 Box purchase intent — ${dietSugar.length > 0 ? `vs ${(dietSugar.filter(r => r.Top2Box_PI === 1).length / dietSugar.length * 100).toFixed(1)}% for sugar-limiting respondents` : ''}.`,
+      badge: 'Segment Finding',
+      badgeColor: '#5a8834',
+    })
+  }
+
+  return out
+}
+
 export default function Overview() {
   const filtered = useFilteredRespondents()
+  const conceptStats = useDataStore(s => s.conceptPerformanceStats)
   const filteredN = filtered.length
 
   const t2bCount = filtered.filter(r => r.Top2Box_PI === 1).length
@@ -118,6 +213,7 @@ export default function Overview() {
     filteredN > 0 ? filtered.reduce((s, r) => s + r.Q11_Appeal, 0) / filteredN : 0
 
   const insights = buildInsights(filtered, filteredN)
+  const sigInsights = buildSigInsights(filtered, filteredN, conceptStats)
 
   const conceptData = [1, 2, 3]
     .map(cell => {
@@ -180,6 +276,39 @@ export default function Overview() {
                     <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
                       {insight.detail}
                     </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Significant Insights */}
+      {sigInsights.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Significant Insights</CardTitle>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Data-driven findings derived from concept comparisons, t-tests, and segment analysis
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {sigInsights.map((si, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-3 rounded-lg border p-3"
+                >
+                  <span
+                    className="mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold text-white"
+                    style={{ backgroundColor: si.badgeColor }}
+                  >
+                    {si.badge}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{si.label}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{si.detail}</p>
                   </div>
                 </div>
               ))}

@@ -32,10 +32,15 @@ interface ToggleGroupProps {
   options: { value: number; label: string }[]
   selected: number[]
   onChange: (vals: number[]) => void
+  disabled?: boolean
+  disabledReason?: string
 }
 
-function ToggleGroup({ label, options, selected, onChange }: ToggleGroupProps) {
+function ToggleGroup({ label, options, selected, onChange, disabled, disabledReason }: ToggleGroupProps) {
+  const allSelected = selected.length === 0
+
   const toggle = (val: number) => {
+    if (disabled) return
     if (selected.includes(val)) {
       onChange(selected.filter(v => v !== val))
     } else {
@@ -44,12 +49,12 @@ function ToggleGroup({ label, options, selected, onChange }: ToggleGroupProps) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className={cn('space-y-2', disabled && 'opacity-40 pointer-events-none')}>
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {label}
         </span>
-        {selected.length > 0 && (
+        {!disabled && !allSelected && (
           <button
             onClick={() => onChange([])}
             className="text-xs text-[#5a8834] hover:underline leading-none"
@@ -58,9 +63,12 @@ function ToggleGroup({ label, options, selected, onChange }: ToggleGroupProps) {
           </button>
         )}
       </div>
+      {disabled && disabledReason && (
+        <p className="text-xs text-muted-foreground italic">{disabledReason}</p>
+      )}
       <div className="flex flex-wrap gap-1.5">
         {options.map(opt => {
-          const active = selected.includes(opt.value)
+          const active = allSelected || selected.includes(opt.value)
           return (
             <button
               key={opt.value}
@@ -81,11 +89,18 @@ function ToggleGroup({ label, options, selected, onChange }: ToggleGroupProps) {
   )
 }
 
-interface SidebarProps {
-  className?: string
+export interface SidebarFilterConfig {
+  conceptCell?: boolean
+  dietFocus?: boolean
+  ageGroup?: boolean
 }
 
-export function Sidebar({ className }: SidebarProps) {
+interface SidebarProps {
+  className?: string
+  activeFilters?: SidebarFilterConfig
+}
+
+export function Sidebar({ className, activeFilters }: SidebarProps) {
   const filters = useDataStore(s => s.filters)
   const setConceptFilter = useDataStore(s => s.setConceptFilter)
   const setDietFocusFilter = useDataStore(s => s.setDietFocusFilter)
@@ -102,6 +117,10 @@ export function Sidebar({ className }: SidebarProps) {
     }
   }, [isLoading, totalN, loadAll])
 
+  const conceptEnabled = activeFilters?.conceptCell !== false
+  const dietEnabled = activeFilters?.dietFocus !== false
+  const ageEnabled = activeFilters?.ageGroup !== false
+
   const hasActiveFilters =
     filters.conceptCells.length > 0 ||
     filters.dietFocus.length > 0 ||
@@ -115,7 +134,6 @@ export function Sidebar({ className }: SidebarProps) {
       )}
     >
       <div className="p-4 space-y-4">
-        {/* N counter */}
         <div className="rounded-lg bg-[#91b82b]/10 border border-[#5a8834]/30 p-3 text-center">
           <p className="text-xs text-muted-foreground uppercase tracking-wide mb-0.5">Filtered N</p>
           <p className="text-3xl font-bold text-[#5a8834] tabular-nums">{filteredN}</p>
@@ -145,6 +163,8 @@ export function Sidebar({ className }: SidebarProps) {
             options={CONCEPT_OPTIONS}
             selected={filters.conceptCells}
             onChange={setConceptFilter}
+            disabled={!conceptEnabled}
+            disabledReason="Not used on this tab"
           />
 
           <ToggleGroup
@@ -152,6 +172,8 @@ export function Sidebar({ className }: SidebarProps) {
             options={DIET_OPTIONS}
             selected={filters.dietFocus}
             onChange={setDietFocusFilter}
+            disabled={!dietEnabled}
+            disabledReason="Not used on this tab"
           />
 
           <ToggleGroup
@@ -159,6 +181,8 @@ export function Sidebar({ className }: SidebarProps) {
             options={AGE_OPTIONS}
             selected={filters.ageGroups}
             onChange={setAgeGroupFilter}
+            disabled={!ageEnabled}
+            disabledReason="Not used on this tab"
           />
         </div>
 
