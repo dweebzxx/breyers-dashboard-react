@@ -1,0 +1,140 @@
+{
+  "row_variables": [
+    {
+      "column": "Q4_PurchaseFreq",
+      "label": "Purchase Frequency",
+      "value_labels": {
+        "1": "Weekly",
+        "2": "2-3 times per month",
+        "3": "Monthly",
+        "4": "Less often"
+      }
+    },
+    {
+      "column": "Q9_Tradeoff",
+      "label": "Protein vs Sugar Tradeoff",
+      "value_labels": {
+        "1": "Higher protein content",
+        "2": "Lower sugar content",
+        "3": "Neither - taste matters more"
+      }
+    },
+    {
+      "column": "Q10_ActiveSeeking",
+      "label": "Active Seeking",
+      "value_labels": {
+        "1": "I actively look for low/zero sugar ice cream",
+        "2": "I actively look for high-protein ice cream",
+        "3": "I actively look for both",
+        "4": "Neither is a priority for me"
+      }
+    },
+    {
+      "column": "Q21_DietFocus",
+      "label": "Diet Focus",
+      "value_labels": {
+        "1": "Limit sugar",
+        "2": "Increase protein",
+        "3": "Both",
+        "4": "Neither"
+      }
+    },
+    {
+      "column": "Q22_HouseholdType",
+      "label": "Household Type",
+      "value_labels": {
+        "1": "Live alone",
+        "2": "Live with spouse/partner (no children)",
+        "3": "Live with spouse/partner and children under 18",
+        "4": "Live with children under 18 (single parent)",
+        "6": "Other"
+      }
+    },
+    {
+      "column": "Q23_Age",
+      "label": "Age Group",
+      "value_labels": {
+        "1": "18-24",
+        "2": "25-34",
+        "3": "35-44",
+        "4": "45-54",
+        "5": "55-64",
+        "6": "65+"
+      }
+    },
+    {
+      "column": "Q24_Income",
+      "label": "Household Income",
+      "value_labels": {
+        "1": "Less than $25,000",
+        "2": "$25,000-$49,999",
+        "3": "$50,000-$74,999",
+        "4": "$75,000-$99,999",
+        "5": "$100,000-$149,999",
+        "6": "$150,000 or more",
+        "7": "Prefer not to say"
+      }
+    },
+    {
+      "column": "Q13_Replacement",
+      "label": "Product Replacement",
+      "value_labels": {
+        "1": "Replace your usual ice cream",
+        "2": "Be in addition to your usual ice cream",
+        "3": "Replace a different dessert",
+        "4": "Not sure"
+      }
+    },
+    {
+      "column": "Q16_PurchaseLocation",
+      "label": "Purchase Location",
+      "value_labels": {
+        "1": "Grocery store",
+        "2": "Club/wholesale store (e.g., Costco, Sam's)",
+        "3": "Online delivery",
+        "4": "Convenience store"
+      }
+    }
+  ],
+  "col_variables": [
+    {
+      "column": "ClaimCell",
+      "label": "Concept Cell",
+      "value_labels": {
+        "1": "with higher protein",
+        "2": "with low or zero added sugar",
+        "3": "with higher protein and low or zero added sugar"
+      }
+    },
+    {
+      "column": "Top2Box_PI",
+      "label": "Top 2 Box Purchase Intent",
+      "value_labels": {
+        "0": "Bottom 3 Box",
+        "1": "Top 2 Box (Likely/Very Likely)"
+      }
+    },
+    {
+      "column": "Q21_DietFocus",
+      "label": "Diet Focus",
+      "value_labels": {
+        "1": "Limit sugar",
+        "2": "Increase protein",
+        "3": "Both",
+        "4": "Neither"
+      }
+    },
+    {
+      "column": "Q23_Age",
+      "label": "Age Group",
+      "value_labels": {
+        "1": "18-24",
+        "2": "25-34",
+        "3": "35-44",
+        "4": "45-54",
+        "5": "55-64",
+        "6": "65+"
+      }
+    }
+  ]
+}
