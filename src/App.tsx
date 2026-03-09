@@ -1,36 +1,10 @@
-import { useEffect, Component, type ReactNode } from 'react'
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
 import { AlertTriangle } from 'lucide-react'
 import { useDataStore, useFilteredRespondents } from '@/store/dataStore'
 import { Sidebar } from '@/components/Sidebar'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
-  constructor(props: { children: ReactNode }) {
-    super(props)
-    this.state = { error: null }
-  }
-  static getDerivedStateFromError(error: Error) {
-    return { error }
-  }
-  componentDidCatch(error: Error, info: { componentStack: string }) {
-    console.error('[ErrorBoundary] Caught error:', error, info.componentStack)
-  }
-  render() {
-    if (this.state.error) {
-      return (
-        <div style={{ padding: 24, color: 'red', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
-          <strong>React Error Boundary caught:</strong>{'\n'}
-          {String(this.state.error)}{'\n\n'}
-          Check the browser console for the component stack.
-        </div>
-      )
-    }
-    return this.props.children
-  }
-}
-
-// Lazy page imports
 import Overview from '@/pages/Overview'
 import ConceptPerformance from '@/pages/ConceptPerformance'
 import DriverAnalysis from '@/pages/DriverAnalysis'
@@ -38,6 +12,7 @@ import Crosstabs from '@/pages/Crosstabs'
 import Correlation from '@/pages/Correlation'
 import PriceSensitivity from '@/pages/PriceSensitivity'
 import RawData from '@/pages/RawData'
+import Demographics from '@/pages/Demographics'
 
 const NAV_TABS = [
   { path: '/', label: 'Overview', end: true },
@@ -46,6 +21,7 @@ const NAV_TABS = [
   { path: '/crosstabs', label: 'Crosstabs' },
   { path: '/correlation', label: 'Correlation' },
   { path: '/price-sensitivity', label: 'Price Sensitivity' },
+  { path: '/demographics', label: 'Demographics' },
   { path: '/raw-data', label: 'Raw Data' },
 ]
 
@@ -79,31 +55,32 @@ function AppShell() {
   }, [loadAll])
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
+    <div className="min-h-screen" style={{ backgroundColor: '#f3f4f7' }}>
       <header className="border-b bg-card shadow-sm sticky top-0 z-40">
         <div className="px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
-            <span className="text-2xl" aria-hidden="true">🍦</span>
+            <div
+              className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
+              style={{ backgroundColor: '#91b82b' }}
+            >
+              <div className="w-3 h-3 rounded-full bg-white/80" />
+            </div>
             <div>
               <h1 className="text-lg font-bold text-foreground leading-tight">
                 Breyers Survey Dashboard
               </h1>
               <p className="text-xs text-muted-foreground">
-                Better For You Claims - Marketing Research Analysis (MKTG6051)
+                Better For You Claims — Marketing Research Analysis (MKTG6051)
               </p>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Body: sidebar + content */}
       <div className="flex">
         <Sidebar />
 
-        {/* Right side: nav + content */}
         <div className="flex-1 min-w-0 flex flex-col">
-          {/* Tab navigation */}
           <nav className="border-b bg-card" aria-label="Dashboard sections">
             <div className="px-4 sm:px-6">
               <div className="flex overflow-x-auto">
@@ -116,7 +93,7 @@ function AppShell() {
                       [
                         'whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors',
                         isActive
-                          ? 'border-primary text-primary'
+                          ? 'border-[#5a8834] text-[#5a8834]'
                           : 'border-transparent text-muted-foreground hover:border-muted-foreground hover:text-foreground',
                       ].join(' ')
                     }
@@ -128,10 +105,8 @@ function AppShell() {
             </div>
           </nav>
 
-          {/* Zero-N alert banner */}
           <ZeroNBanner />
 
-          {/* Page content */}
           <main className="flex-1 px-4 py-6 sm:px-6">
             {error ? (
               <Alert variant="destructive">
@@ -141,7 +116,10 @@ function AppShell() {
             ) : isLoading ? (
               <div className="flex items-center justify-center py-24">
                 <div className="text-center">
-                  <div className="text-4xl mb-3" aria-hidden="true">🍦</div>
+                  <div
+                    className="w-10 h-10 rounded-full border-4 border-t-transparent animate-spin mx-auto mb-3"
+                    style={{ borderColor: '#91b82b', borderTopColor: 'transparent' }}
+                  />
                   <p className="text-muted-foreground text-sm">Loading survey data...</p>
                 </div>
               </div>
@@ -153,6 +131,7 @@ function AppShell() {
                 <Route path="/crosstabs" element={<Crosstabs />} />
                 <Route path="/correlation" element={<Correlation />} />
                 <Route path="/price-sensitivity" element={<PriceSensitivity />} />
+                <Route path="/demographics" element={<Demographics />} />
                 <Route path="/raw-data" element={<RawData />} />
               </Routes>
             )}
@@ -165,10 +144,8 @@ function AppShell() {
 
 export default function App() {
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <AppShell />
-      </BrowserRouter>
-    </ErrorBoundary>
+    <BrowserRouter>
+      <AppShell />
+    </BrowserRouter>
   )
 }

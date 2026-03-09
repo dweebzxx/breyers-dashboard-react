@@ -25,7 +25,7 @@ const FREQ_LABELS: Record<number, string> = {
   4: 'Less Often',
 }
 
-const CHART_COLORS = ['#2563eb', '#f59e0b', '#0d9488', '#7c3aed', '#dc2626']
+const CHART_COLORS = ['#91b82b', '#47a0d0', '#e1c4bd', '#d2b974', '#5a8834']
 
 function KpiCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
@@ -39,6 +39,75 @@ function KpiCard({ label, value, sub }: { label: string; value: string; sub?: st
   )
 }
 
+interface Insight {
+  label: string
+  detail: string
+  color: string
+}
+
+function buildInsights(
+  filtered: ReturnType<typeof useFilteredRespondents>,
+  n: number
+): Insight[] {
+  if (n === 0) return []
+
+  const insights: Insight[] = []
+
+  const t2bPct = (filtered.filter(r => r.Top2Box_PI === 1).length / n) * 100
+  const bestCell = [1, 2, 3]
+    .map(c => {
+      const sub = filtered.filter(r => r.ClaimCell === c)
+      return { cell: c, t2b: sub.length > 0 ? (sub.filter(r => r.Top2Box_PI === 1).length / sub.length) * 100 : 0 }
+    })
+    .sort((a, b) => b.t2b - a.t2b)[0]
+
+  insights.push({
+    label: 'Purchase Intent',
+    detail: `${t2bPct.toFixed(1)}% of respondents rate purchase intent in the top 2 box (Likely or Very Likely).`,
+    color: '#91b82b',
+  })
+
+  insights.push({
+    label: 'Strongest Concept',
+    detail: `${CONCEPT_SHORT[bestCell.cell]} leads with ${bestCell.t2b.toFixed(1)}% Top 2 Box purchase intent.`,
+    color: '#47a0d0',
+  })
+
+  const meanAppeal = filtered.reduce((s, r) => s + r.Q11_Appeal, 0) / n
+  const appealBenchmark = meanAppeal >= 3.5 ? 'above' : 'below'
+  insights.push({
+    label: 'Concept Appeal',
+    detail: `Average appeal score is ${meanAppeal.toFixed(2)} out of 5 — ${appealBenchmark} the midpoint of the scale.`,
+    color: '#d2b974',
+  })
+
+  const proteinDiet = filtered.filter(r => r.Q21_DietFocus === 2 || r.Q21_DietFocus === 3).length
+  const proteinPct = (proteinDiet / n) * 100
+  insights.push({
+    label: 'Protein-Focused Audience',
+    detail: `${proteinPct.toFixed(0)}% of respondents are actively trying to increase protein intake — a key target for higher-protein claims.`,
+    color: '#5a8834',
+  })
+
+  const sugarDiet = filtered.filter(r => r.Q21_DietFocus === 1 || r.Q21_DietFocus === 3).length
+  const sugarPct = (sugarDiet / n) * 100
+  insights.push({
+    label: 'Sugar-Conscious Audience',
+    detail: `${sugarPct.toFixed(0)}% of respondents are limiting sugar — a strong base for the low/zero sugar concept.`,
+    color: '#e1c4bd',
+  })
+
+  const weekly = filtered.filter(r => r.Q4_PurchaseFreq === 1).length
+  const weeklyPct = (weekly / n) * 100
+  insights.push({
+    label: 'Frequent Buyers',
+    detail: `${weeklyPct.toFixed(0)}% of respondents purchase ice cream weekly, indicating a high-engagement consumer base.`,
+    color: '#000000',
+  })
+
+  return insights
+}
+
 export default function Overview() {
   const filtered = useFilteredRespondents()
   const filteredN = filtered.length
@@ -48,7 +117,8 @@ export default function Overview() {
   const meanAppeal =
     filteredN > 0 ? filtered.reduce((s, r) => s + r.Q11_Appeal, 0) / filteredN : 0
 
-  // Concept distribution sorted descending by n
+  const insights = buildInsights(filtered, filteredN)
+
   const conceptData = [1, 2, 3]
     .map(cell => {
       const subset = filtered.filter(r => r.ClaimCell === cell)
@@ -56,7 +126,6 @@ export default function Overview() {
     })
     .sort((a, b) => b.n - a.n)
 
-  // Purchase frequency sorted descending by count
   const freqData = [1, 2, 3, 4]
     .map(key => ({
       label: FREQ_LABELS[key],
@@ -91,6 +160,33 @@ export default function Overview() {
           sub="Scale: 1 to 5"
         />
       </div>
+
+      {/* Top Insights */}
+      {insights.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Top Insights</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3">
+              {insights.map((insight, i) => (
+                <div
+                  key={i}
+                  className="flex gap-3 rounded-lg border p-3"
+                  style={{ borderLeftWidth: 3, borderLeftColor: insight.color }}
+                >
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{insight.label}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                      {insight.detail}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Charts */}
       <div className="grid grid-cols-2 gap-6">
@@ -153,7 +249,7 @@ export default function Overview() {
                       contentStyle={{ fontSize: 12 }}
                       formatter={(val: number) => [val, 'Respondents (n)']}
                     />
-                    <Bar dataKey="count" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="count" fill="#47a0d0" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
                 <ScaleFootnote scale="Ice cream purchase frequency (sorted descending)" />
