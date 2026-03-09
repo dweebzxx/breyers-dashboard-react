@@ -1,6 +1,5 @@
 /**
- * Zustand store for survey data and pre-computed statistics.
- * Data is loaded once from public/data/ JSON files.
+ * Zustand store for survey data, pre-computed statistics, and UI filter state.
  */
 
 import { create } from 'zustand'
@@ -14,6 +13,12 @@ import type {
   PriceSensitivityStats,
   CrosstabsOptions,
 } from '@/types/stats'
+
+interface FilterState {
+  conceptCells: number[]   // [] = all
+  dietFocus: number[]      // [] = all
+  ageGroups: number[]      // [] = all
+}
 
 interface DataState {
   // Loading state
@@ -34,8 +39,14 @@ interface DataState {
   priceSensitivityStats: PriceSensitivityStats | null
   crosstabsOptions: CrosstabsOptions | null
 
+  // Filter state
+  filters: FilterState
+
   // Actions
   loadAll: () => Promise<void>
+  setConceptFilter: (vals: number[]) => void
+  setDietFocusFilter: (vals: number[]) => void
+  setAgeGroupFilter: (vals: number[]) => void
 }
 
 async function fetchJSON<T>(path: string): Promise<T> {
@@ -59,6 +70,19 @@ export const useDataStore = create<DataState>((set) => ({
   correlationStats: null,
   priceSensitivityStats: null,
   crosstabsOptions: null,
+
+  filters: {
+    conceptCells: [],
+    dietFocus: [],
+    ageGroups: [],
+  },
+
+  setConceptFilter: (vals) =>
+    set(state => ({ filters: { ...state.filters, conceptCells: vals } })),
+  setDietFocusFilter: (vals) =>
+    set(state => ({ filters: { ...state.filters, dietFocus: vals } })),
+  setAgeGroupFilter: (vals) =>
+    set(state => ({ filters: { ...state.filters, ageGroups: vals } })),
 
   loadAll: async () => {
     set({ isLoading: true, error: null })
@@ -108,3 +132,14 @@ export const useDataStore = create<DataState>((set) => ({
     }
   },
 }))
+
+/** Selector: returns respondents filtered by the current filter state. */
+export function selectFilteredRespondents(state: DataState): Respondent[] {
+  const { respondents, filters } = state
+  return respondents.filter(r => {
+    if (filters.conceptCells.length > 0 && !filters.conceptCells.includes(r.ClaimCell)) return false
+    if (filters.dietFocus.length > 0 && !filters.dietFocus.includes(r.Q21_DietFocus)) return false
+    if (filters.ageGroups.length > 0 && !filters.ageGroups.includes(r.Q23_Age)) return false
+    return true
+  })
+}
