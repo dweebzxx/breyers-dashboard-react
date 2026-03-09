@@ -1,9 +1,34 @@
-import { useEffect } from 'react'
+import { useEffect, Component, type ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
 import { AlertTriangle } from 'lucide-react'
 import { useDataStore, selectFilteredRespondents } from '@/store/dataStore'
 import { Sidebar } from '@/components/Sidebar'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+
+class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  constructor(props: { children: ReactNode }) {
+    super(props)
+    this.state = { error: null }
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+  componentDidCatch(error: Error, info: { componentStack: string }) {
+    console.error('[ErrorBoundary] Caught error:', error, info.componentStack)
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 24, color: 'red', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
+          <strong>React Error Boundary caught:</strong>{'\n'}
+          {String(this.state.error)}{'\n\n'}
+          Check the browser console for the component stack.
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 // Lazy page imports
 import Overview from '@/pages/Overview'
@@ -140,8 +165,10 @@ function AppShell() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AppShell />
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppShell />
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }
