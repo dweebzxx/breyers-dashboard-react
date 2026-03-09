@@ -1,4 +1,4 @@
-import { useDataStore, selectFilteredRespondents } from '@/store/dataStore'
+import { useFilteredRespondents } from '@/store/dataStore'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScaleFootnote } from '@/components/ScaleFootnote'
 import {
@@ -40,7 +40,7 @@ function KpiCard({ label, value, sub }: { label: string; value: string; sub?: st
 }
 
 export default function Overview() {
-  const filtered = useDataStore(selectFilteredRespondents)
+  const filtered = useFilteredRespondents()
   const filteredN = filtered.length
 
   const t2bCount = filtered.filter(r => r.Top2Box_PI === 1).length

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useDataStore, selectFilteredRespondents } from '@/store/dataStore'
+import { useDataStore, useFilteredRespondents } from '@/store/dataStore'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatCard } from '@/components/StatCard'
@@ -31,7 +31,7 @@ const CONCEPT_COLORS: Record<string, string> = {
 export default function ConceptPerformance() {
   const [groupA, setGroupA] = useState(CONCEPTS[0].value)
   const [groupB, setGroupB] = useState(CONCEPTS[1].value)
-  const filtered = useDataStore(selectFilteredRespondents)
+  const filtered = useFilteredRespondents()
   const conceptStats = useDataStore(s => s.conceptPerformanceStats)
 
   // Compute means from filtered respondents for the selected concepts

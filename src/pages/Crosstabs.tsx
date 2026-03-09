@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { useDataStore, selectFilteredRespondents } from '@/store/dataStore'
+import { useDataStore, useFilteredRespondents } from '@/store/dataStore'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ChiStatCard } from '@/components/StatCard'
@@ -14,7 +14,7 @@ function getRespondentValue(r: Respondent, col: string): number | null {
 
 export default function Crosstabs() {
   const crosstabsOptions = useDataStore(s => s.crosstabsOptions)
-  const filtered = useDataStore(selectFilteredRespondents)
+  const filtered = useFilteredRespondents()
 
   const rowVars = crosstabsOptions?.row_variables ?? []
   const colVars = crosstabsOptions?.col_variables ?? []

@@ -1,7 +1,7 @@
 import { useEffect, Component, type ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
 import { AlertTriangle } from 'lucide-react'
-import { useDataStore, selectFilteredRespondents } from '@/store/dataStore'
+import { useDataStore, useFilteredRespondents } from '@/store/dataStore'
 import { Sidebar } from '@/components/Sidebar'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
@@ -50,7 +50,7 @@ const NAV_TABS = [
 ]
 
 function ZeroNBanner() {
-  const filtered = useDataStore(selectFilteredRespondents)
+  const filtered = useFilteredRespondents()
   const totalN = useDataStore(s => s.respondents.length)
   const isLoading = useDataStore(s => s.isLoading)
 

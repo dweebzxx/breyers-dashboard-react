@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { AlertTriangle } from 'lucide-react'
-import { useDataStore, selectFilteredRespondents } from '@/store/dataStore'
+import { useDataStore, useFilteredRespondents } from '@/store/dataStore'
 import { MultiSelect } from '@/components/ui/multiselect'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -37,7 +37,7 @@ export function Sidebar({ className }: SidebarProps) {
   const setConceptFilter = useDataStore(s => s.setConceptFilter)
   const setDietFocusFilter = useDataStore(s => s.setDietFocusFilter)
   const setAgeGroupFilter = useDataStore(s => s.setAgeGroupFilter)
-  const filteredRespondents = useDataStore(selectFilteredRespondents)
+  const filteredRespondents = useFilteredRespondents()
   const filteredN = filteredRespondents.length
   const totalN = useDataStore(s => s.respondents.length)
   const isLoading = useDataStore(s => s.isLoading)

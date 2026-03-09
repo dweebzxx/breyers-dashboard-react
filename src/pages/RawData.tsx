@@ -8,7 +8,7 @@ import {
   createColumnHelper,
 } from '@tanstack/react-table'
 import { Download } from 'lucide-react'
-import { useDataStore, selectFilteredRespondents } from '@/store/dataStore'
+import { useFilteredRespondents } from '@/store/dataStore'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -113,7 +113,7 @@ const CONCEPT_SHORT: Record<number, string> = {
 }
 
 export default function RawData() {
-  const filtered = useDataStore(selectFilteredRespondents)
+  const filtered = useFilteredRespondents()
   const [globalFilter, setGlobalFilter] = useState('')
 
   const tableData = useMemo((): RowData[] =>

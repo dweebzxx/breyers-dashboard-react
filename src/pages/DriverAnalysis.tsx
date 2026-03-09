@@ -6,7 +6,7 @@ import {
   createColumnHelper,
 } from '@tanstack/react-table'
 import { Info } from 'lucide-react'
-import { useDataStore, selectFilteredRespondents } from '@/store/dataStore'
+import { useDataStore, useFilteredRespondents } from '@/store/dataStore'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
@@ -75,7 +75,7 @@ export default function DriverAnalysis() {
   const [refCell, setRefCell] = useState('2')
   const olsStats = useDataStore(s => s.regressionOLSStats)
   const logitStats = useDataStore(s => s.regressionLogitStats)
-  const filtered = useDataStore(selectFilteredRespondents)
+  const filtered = useFilteredRespondents()
 
   // Check if dummies should be shown
   const uniqueCells = useMemo(

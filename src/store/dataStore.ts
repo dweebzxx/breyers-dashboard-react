@@ -3,6 +3,7 @@
  */
 
 import { create } from 'zustand'
+import { useShallow } from 'zustand/react/shallow'
 import type { Respondent, Labels, QuestionText } from '@/types/survey'
 import type {
   OverviewStats,
@@ -142,4 +143,12 @@ export function selectFilteredRespondents(state: DataState): Respondent[] {
     if (filters.ageGroups.length > 0 && !filters.ageGroups.includes(r.Q23_Age)) return false
     return true
   })
+}
+
+/**
+ * Hook that returns filtered respondents without causing infinite re-renders.
+ * Uses useShallow so Zustand compares by element identity rather than array reference.
+ */
+export function useFilteredRespondents(): Respondent[] {
+  return useDataStore(useShallow(selectFilteredRespondents))
 }
