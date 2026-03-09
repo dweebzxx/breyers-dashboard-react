@@ -1,0 +1,29 @@
+{
+  "total_n": 169,
+  "concept_distribution": [
+    {
+      "concept_label": "with higher protein",
+      "claim_cell": 1,
+      "n": 55,
+      "mean_appeal": 3.27,
+      "mean_pi": 3.45,
+      "top2box_pct": 52.7
+    },
+    {
+      "concept_label": "with low or zero added sugar",
+      "claim_cell": 2,
+      "n": 67,
+      "mean_appeal": 3.12,
+      "mean_pi": 3.31,
+      "top2box_pct": 41.8
+    },
+    {
+      "concept_label": "with higher protein and low or zero added sugar",
+      "claim_cell": 3,
+      "n": 47,
+      "mean_appeal": 3.32,
+      "mean_pi": 3.21,
+      "top2box_pct": 48.9
+    }
+  ]
+}

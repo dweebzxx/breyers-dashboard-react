@@ -1,0 +1,217 @@
+{
+  "columns": [
+    "Q8_AttrImportance_1",
+    "Q8_AttrImportance_2",
+    "Q8_AttrImportance_3",
+    "Q8_AttrImportance_4",
+    "Q8_AttrImportance_5",
+    "Q8_AttrImportance_6",
+    "Q8_AttrImportance_7",
+    "Q11_Appeal",
+    "Q12_PurchaseIntent"
+  ],
+  "n_obs": 169,
+  "corr_matrix": {
+    "Q8_AttrImportance_1": {
+      "Q8_AttrImportance_1": 1.0,
+      "Q8_AttrImportance_2": 0.071,
+      "Q8_AttrImportance_3": 0.089,
+      "Q8_AttrImportance_4": -0.157,
+      "Q8_AttrImportance_5": -0.05,
+      "Q8_AttrImportance_6": -0.008,
+      "Q8_AttrImportance_7": 0.016,
+      "Q11_Appeal": -0.006,
+      "Q12_PurchaseIntent": 0.155
+    },
+    "Q8_AttrImportance_2": {
+      "Q8_AttrImportance_1": 0.071,
+      "Q8_AttrImportance_2": 1.0,
+      "Q8_AttrImportance_3": 0.456,
+      "Q8_AttrImportance_4": 0.437,
+      "Q8_AttrImportance_5": 0.509,
+      "Q8_AttrImportance_6": 0.484,
+      "Q8_AttrImportance_7": 0.489,
+      "Q11_Appeal": 0.297,
+      "Q12_PurchaseIntent": 0.15
+    },
+    "Q8_AttrImportance_3": {
+      "Q8_AttrImportance_1": 0.089,
+      "Q8_AttrImportance_2": 0.456,
+      "Q8_AttrImportance_3": 1.0,
+      "Q8_AttrImportance_4": 0.483,
+      "Q8_AttrImportance_5": 0.587,
+      "Q8_AttrImportance_6": 0.423,
+      "Q8_AttrImportance_7": 0.521,
+      "Q11_Appeal": 0.29,
+      "Q12_PurchaseIntent": 0.217
+    },
+    "Q8_AttrImportance_4": {
+      "Q8_AttrImportance_1": -0.157,
+      "Q8_AttrImportance_2": 0.437,
+      "Q8_AttrImportance_3": 0.483,
+      "Q8_AttrImportance_4": 1.0,
+      "Q8_AttrImportance_5": 0.723,
+      "Q8_AttrImportance_6": 0.59,
+      "Q8_AttrImportance_7": 0.707,
+      "Q11_Appeal": 0.3,
+      "Q12_PurchaseIntent": 0.354
+    },
+    "Q8_AttrImportance_5": {
+      "Q8_AttrImportance_1": -0.05,
+      "Q8_AttrImportance_2": 0.509,
+      "Q8_AttrImportance_3": 0.587,
+      "Q8_AttrImportance_4": 0.723,
+      "Q8_AttrImportance_5": 1.0,
+      "Q8_AttrImportance_6": 0.628,
+      "Q8_AttrImportance_7": 0.736,
+      "Q11_Appeal": 0.371,
+      "Q12_PurchaseIntent": 0.328
+    },
+    "Q8_AttrImportance_6": {
+      "Q8_AttrImportance_1": -0.008,
+      "Q8_AttrImportance_2": 0.484,
+      "Q8_AttrImportance_3": 0.423,
+      "Q8_AttrImportance_4": 0.59,
+      "Q8_AttrImportance_5": 0.628,
+      "Q8_AttrImportance_6": 1.0,
+      "Q8_AttrImportance_7": 0.614,
+      "Q11_Appeal": 0.275,
+      "Q12_PurchaseIntent": 0.205
+    },
+    "Q8_AttrImportance_7": {
+      "Q8_AttrImportance_1": 0.016,
+      "Q8_AttrImportance_2": 0.489,
+      "Q8_AttrImportance_3": 0.521,
+      "Q8_AttrImportance_4": 0.707,
+      "Q8_AttrImportance_5": 0.736,
+      "Q8_AttrImportance_6": 0.614,
+      "Q8_AttrImportance_7": 1.0,
+      "Q11_Appeal": 0.268,
+      "Q12_PurchaseIntent": 0.258
+    },
+    "Q11_Appeal": {
+      "Q8_AttrImportance_1": -0.006,
+      "Q8_AttrImportance_2": 0.297,
+      "Q8_AttrImportance_3": 0.29,
+      "Q8_AttrImportance_4": 0.3,
+      "Q8_AttrImportance_5": 0.371,
+      "Q8_AttrImportance_6": 0.275,
+      "Q8_AttrImportance_7": 0.268,
+      "Q11_Appeal": 1.0,
+      "Q12_PurchaseIntent": 0.606
+    },
+    "Q12_PurchaseIntent": {
+      "Q8_AttrImportance_1": 0.155,
+      "Q8_AttrImportance_2": 0.15,
+      "Q8_AttrImportance_3": 0.217,
+      "Q8_AttrImportance_4": 0.354,
+      "Q8_AttrImportance_5": 0.328,
+      "Q8_AttrImportance_6": 0.205,
+      "Q8_AttrImportance_7": 0.258,
+      "Q11_Appeal": 0.606,
+      "Q12_PurchaseIntent": 1.0
+    }
+  },
+  "pvalue_matrix": {
+    "Q8_AttrImportance_1": {
+      "Q8_AttrImportance_1": null,
+      "Q8_AttrImportance_2": 0.3578,
+      "Q8_AttrImportance_3": 0.2472,
+      "Q8_AttrImportance_4": 0.0416,
+      "Q8_AttrImportance_5": 0.5149,
+      "Q8_AttrImportance_6": 0.9162,
+      "Q8_AttrImportance_7": 0.8354,
+      "Q11_Appeal": 0.9375,
+      "Q12_PurchaseIntent": 0.0437
+    },
+    "Q8_AttrImportance_2": {
+      "Q8_AttrImportance_1": 0.3578,
+      "Q8_AttrImportance_2": null,
+      "Q8_AttrImportance_3": 0.0,
+      "Q8_AttrImportance_4": 0.0,
+      "Q8_AttrImportance_5": 0.0,
+      "Q8_AttrImportance_6": 0.0,
+      "Q8_AttrImportance_7": 0.0,
+      "Q11_Appeal": 0.0001,
+      "Q12_PurchaseIntent": 0.0508
+    },
+    "Q8_AttrImportance_3": {
+      "Q8_AttrImportance_1": 0.2472,
+      "Q8_AttrImportance_2": 0.0,
+      "Q8_AttrImportance_3": null,
+      "Q8_AttrImportance_4": 0.0,
+      "Q8_AttrImportance_5": 0.0,
+      "Q8_AttrImportance_6": 0.0,
+      "Q8_AttrImportance_7": 0.0,
+      "Q11_Appeal": 0.0001,
+      "Q12_PurchaseIntent": 0.0047
+    },
+    "Q8_AttrImportance_4": {
+      "Q8_AttrImportance_1": 0.0416,
+      "Q8_AttrImportance_2": 0.0,
+      "Q8_AttrImportance_3": 0.0,
+      "Q8_AttrImportance_4": null,
+      "Q8_AttrImportance_5": 0.0,
+      "Q8_AttrImportance_6": 0.0,
+      "Q8_AttrImportance_7": 0.0,
+      "Q11_Appeal": 0.0001,
+      "Q12_PurchaseIntent": 0.0
+    },
+    "Q8_AttrImportance_5": {
+      "Q8_AttrImportance_1": 0.5149,
+      "Q8_AttrImportance_2": 0.0,
+      "Q8_AttrImportance_3": 0.0,
+      "Q8_AttrImportance_4": 0.0,
+      "Q8_AttrImportance_5": null,
+      "Q8_AttrImportance_6": 0.0,
+      "Q8_AttrImportance_7": 0.0,
+      "Q11_Appeal": 0.0,
+      "Q12_PurchaseIntent": 0.0
+    },
+    "Q8_AttrImportance_6": {
+      "Q8_AttrImportance_1": 0.9162,
+      "Q8_AttrImportance_2": 0.0,
+      "Q8_AttrImportance_3": 0.0,
+      "Q8_AttrImportance_4": 0.0,
+      "Q8_AttrImportance_5": 0.0,
+      "Q8_AttrImportance_6": null,
+      "Q8_AttrImportance_7": 0.0,
+      "Q11_Appeal": 0.0003,
+      "Q12_PurchaseIntent": 0.0076
+    },
+    "Q8_AttrImportance_7": {
+      "Q8_AttrImportance_1": 0.8354,
+      "Q8_AttrImportance_2": 0.0,
+      "Q8_AttrImportance_3": 0.0,
+      "Q8_AttrImportance_4": 0.0,
+      "Q8_AttrImportance_5": 0.0,
+      "Q8_AttrImportance_6": 0.0,
+      "Q8_AttrImportance_7": null,
+      "Q11_Appeal": 0.0004,
+      "Q12_PurchaseIntent": 0.0007
+    },
+    "Q11_Appeal": {
+      "Q8_AttrImportance_1": 0.9375,
+      "Q8_AttrImportance_2": 0.0001,
+      "Q8_AttrImportance_3": 0.0001,
+      "Q8_AttrImportance_4": 0.0001,
+      "Q8_AttrImportance_5": 0.0,
+      "Q8_AttrImportance_6": 0.0003,
+      "Q8_AttrImportance_7": 0.0004,
+      "Q11_Appeal": null,
+      "Q12_PurchaseIntent": 0.0
+    },
+    "Q12_PurchaseIntent": {
+      "Q8_AttrImportance_1": 0.0437,
+      "Q8_AttrImportance_2": 0.0508,
+      "Q8_AttrImportance_3": 0.0047,
+      "Q8_AttrImportance_4": 0.0,
+      "Q8_AttrImportance_5": 0.0,
+      "Q8_AttrImportance_6": 0.0076,
+      "Q8_AttrImportance_7": 0.0007,
+      "Q11_Appeal": 0.0,
+      "Q12_PurchaseIntent": null
+    }
+  },
+  "error": null
+}

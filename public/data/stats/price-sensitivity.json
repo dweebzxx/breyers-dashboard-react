@@ -1,0 +1,54 @@
+{
+  "price_points": [
+    {
+      "price_col": "Q17a_Price399",
+      "price_label": "$3.99",
+      "overall_mean": 3.864,
+      "by_concept": {
+        "with higher protein": 3.782,
+        "with low or zero added sugar": 3.94,
+        "with higher protein and low or zero added sugar": 3.851
+      }
+    },
+    {
+      "price_col": "Q17b_Price499",
+      "price_label": "$4.99",
+      "overall_mean": 3.728,
+      "by_concept": {
+        "with higher protein": 3.727,
+        "with low or zero added sugar": 3.716,
+        "with higher protein and low or zero added sugar": 3.745
+      }
+    },
+    {
+      "price_col": "Q17c_Price599",
+      "price_label": "$5.99",
+      "overall_mean": 3.556,
+      "by_concept": {
+        "with higher protein": 3.673,
+        "with low or zero added sugar": 3.507,
+        "with higher protein and low or zero added sugar": 3.489
+      }
+    },
+    {
+      "price_col": "Q17d_Price699",
+      "price_label": "$6.99",
+      "overall_mean": 3.456,
+      "by_concept": {
+        "with higher protein": 3.491,
+        "with low or zero added sugar": 3.373,
+        "with higher protein and low or zero added sugar": 3.532
+      }
+    },
+    {
+      "price_col": "Q17e_Price799",
+      "price_label": "$7.99",
+      "overall_mean": 3.219,
+      "by_concept": {
+        "with higher protein": 3.2,
+        "with low or zero added sugar": 3.045,
+        "with higher protein and low or zero added sugar": 3.489
+      }
+    }
+  ]
+}

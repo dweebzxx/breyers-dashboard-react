@@ -1,0 +1,102 @@
+{
+  "appeal": [
+    {
+      "group1": "with higher protein",
+      "group2": "with low or zero added sugar",
+      "result": {
+        "group1_mean": 3.27,
+        "group2_mean": 3.12,
+        "t_statistic": 0.778,
+        "p_value": 0.4381,
+        "ci_low": -0.237,
+        "ci_high": 0.544,
+        "n1": 55,
+        "n2": 67,
+        "mean_diff": 0.153,
+        "error": null
+      }
+    },
+    {
+      "group1": "with higher protein",
+      "group2": "with higher protein and low or zero added sugar",
+      "result": {
+        "group1_mean": 3.27,
+        "group2_mean": 3.32,
+        "t_statistic": -0.241,
+        "p_value": 0.8102,
+        "ci_low": -0.429,
+        "ci_high": 0.336,
+        "n1": 55,
+        "n2": 47,
+        "mean_diff": -0.046,
+        "error": null
+      }
+    },
+    {
+      "group1": "with low or zero added sugar",
+      "group2": "with higher protein and low or zero added sugar",
+      "result": {
+        "group1_mean": 3.12,
+        "group2_mean": 3.32,
+        "t_statistic": -1.161,
+        "p_value": 0.2481,
+        "ci_low": -0.541,
+        "ci_high": 0.141,
+        "n1": 67,
+        "n2": 47,
+        "mean_diff": -0.2,
+        "error": null
+      }
+    }
+  ],
+  "purchase_intent": [
+    {
+      "group1": "with higher protein",
+      "group2": "with low or zero added sugar",
+      "result": {
+        "group1_mean": 3.45,
+        "group2_mean": 3.31,
+        "t_statistic": 0.863,
+        "p_value": 0.3903,
+        "ci_low": -0.183,
+        "ci_high": 0.466,
+        "n1": 55,
+        "n2": 67,
+        "mean_diff": 0.141,
+        "error": null
+      }
+    },
+    {
+      "group1": "with higher protein",
+      "group2": "with higher protein and low or zero added sugar",
+      "result": {
+        "group1_mean": 3.45,
+        "group2_mean": 3.21,
+        "t_statistic": 1.192,
+        "p_value": 0.2361,
+        "ci_low": -0.161,
+        "ci_high": 0.644,
+        "n1": 55,
+        "n2": 47,
+        "mean_diff": 0.242,
+        "error": null
+      }
+    },
+    {
+      "group1": "with low or zero added sugar",
+      "group2": "with higher protein and low or zero added sugar",
+      "result": {
+        "group1_mean": 3.31,
+        "group2_mean": 3.21,
+        "t_statistic": 0.565,
+        "p_value": 0.5737,
+        "ci_low": -0.254,
+        "ci_high": 0.455,
+        "n1": 67,
+        "n2": 47,
+        "mean_diff": 0.101,
+        "error": null
+      }
+    }
+  ]
+}
